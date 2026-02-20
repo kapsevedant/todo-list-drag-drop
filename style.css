@@ -1,0 +1,82 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial; }
+
+body { background: #f0f2f5; padding: 20px; }
+
+.container {
+  max-width: 500px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+#new-todo {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+#new-todo:focus { border-color: #4a90e2; outline: none; }
+
+.filters { display: flex; gap: 8px; margin-bottom: 15px; }
+.filters button {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 20px;
+  cursor: pointer;
+}
+.filters button.active { 
+  background: #4a90e2; 
+  color: white; 
+}
+
+.todo-row {
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  background: #f8f9fa;
+  align-items: center;
+}
+
+.todo-row input:checked + span { 
+  text-decoration: line-through; 
+  opacity: 0.6; 
+}
+
+.todo-row.sub { 
+  background: #e3f2fd; 
+  margin-left: 15px;
+  padding-left: 15px;
+  border-left: 3px solid #2196f3;
+}
+
+.todo-row button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.add-btn { background: #4caf50; color: white; }
+.delete-btn { background: #f44336; color: white; }
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+ul{
+  list-style: none;
+}

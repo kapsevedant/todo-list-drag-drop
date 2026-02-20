@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Todo Drag App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+  <h1 style="text-align: center;">📝 Todo List (Drag & Drop)</h1>
+  <br><br>
+  <input id="new-todo" placeholder="Type todo and press Enter">
+
+  <div class="filters">
+    <button data-f="all" class="active">All</button>
+    <button data-f="active">Active</button>
+    <button data-f="completed">Completed</button>
+  </div>
+
+  <ul id="list"></ul>
+
+  <div class="footer">
+    <span id="count"></span>
+    <!-- <button onclick="clearDone()">Clear Completed</button> -->
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

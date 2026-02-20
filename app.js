@@ -15,7 +15,7 @@ function render() {
     if (currentFilter === "completed") return t.done;
   });
 
-    if(visible.length === 0) {
+  if (visible.length === 0) {
     listEl.innerHTML = `<div>No Items are present</div>`;
   } else {
     listEl.innerHTML = visible.map(todoTemplate).join("");
@@ -58,13 +58,13 @@ function todoTemplate(todo) {
 function toggleTodo(id) {
   let todo = todos.find(t => t.id === id);
   todo.done = !todo.done;
-  saveTodos(); 
+  saveTodos();
   render();
 }
 
 function deleteTodo(id) {
   todos = todos.filter(t => t.id !== id);
-  saveTodos(); 
+  saveTodos();
   render();
 }
 
@@ -72,20 +72,22 @@ function addSub(id) {
   let text = prompt("Subtask:");
   if (!text) return;
   todos.find(t => t.id === id).subs.push({ id: makeId(), text, done: false });
-  saveTodos(); render();
+  saveTodos();
+  render();
 }
 
 function toggleSub(pid, sid) {
   let sub = todos.find(t => t.id === pid).subs.find(s => s.id === sid);
   sub.done = !sub.done;
-  saveTodos(); 
+  saveTodos();
   render();
 }
 
 function deleteSub(pid, sid) {
   let p = todos.find(t => t.id === pid);
   p.subs = p.subs.filter(s => s.id !== sid);
-  saveTodos(); render();
+  saveTodos();
+  render();
 }
 
 // ================= ADD TODO =================
@@ -93,7 +95,8 @@ document.getElementById("new-todo").onkeydown = e => {
   if (e.key === "Enter" && e.target.value.trim()) {
     todos.push({ id: makeId(), text: e.target.value, done: false, subs: [] });
     e.target.value = "";
-    saveTodos(); render();
+    saveTodos();
+    render();
   }
 };
 
@@ -106,11 +109,14 @@ document.querySelectorAll(".filters button").forEach(btn => {
 // function clearDone() {
 //   todos = todos.map(t => ({ ...t, subs: t.subs.filter(s => s.done === true) }))
 //                .filter(t => t.done === true);
-//   saveTodos(); 
+//   saveTodos();
 //   render();
 // }
 
 // ================= DRAG & DROP =================
+
+// Allow drop anywhere on the body (needed for promote-to-parent feature)
+document.body.addEventListener("dragover", e => e.preventDefault());
 
 // Drag start
 document.addEventListener("dragstart", e => {
@@ -132,28 +138,41 @@ document.addEventListener("dragend", e => {
   if (row) row.classList.remove("dragging");
 });
 
-// Drag over parent todo list to allow drop
+// Drag over list to allow drop inside
 listEl.addEventListener("dragover", e => {
   e.preventDefault();
 });
 
-// Drop on todo or sub-list
+// Drop handler
 document.addEventListener("drop", e => {
   let todoRow = e.target.closest(".todo-row[data-type='todo']");
   let subList = e.target.closest(".sub-list");
+  let isInsideList = e.target.closest("#list");
 
   if (!dragged) return;
 
+  // ===== SUB -> PROMOTE TO PARENT TASK (dropped outside the list) =====
+  if (dragged.type === "sub" && !isInsideList) {
+    let oldParent = todos.find(t => t.id === dragged.pid);
+    let subItem = oldParent.subs.find(s => s.id === dragged.id);
+
+    // Remove from old parent
+    oldParent.subs = oldParent.subs.filter(s => s.id !== dragged.id);
+
+    // Promote to top-level todo
+    todos.push({ id: subItem.id, text: subItem.text, done: subItem.done, subs: [] });
+  }
+
   // ===== SUB -> ANOTHER PARENT TODO =====
-  if (dragged.type === "sub" && (todoRow || subList)) {
+  else if (dragged.type === "sub" && (todoRow || subList)) {
     let newParentId = (todoRow && todoRow.dataset.id) || (subList && subList.dataset.parent);
     let oldParent = todos.find(t => t.id === dragged.pid);
     let subItem = oldParent.subs.find(s => s.id === dragged.id);
 
-    // remove from old parent
+    // Remove from old parent
     oldParent.subs = oldParent.subs.filter(s => s.id !== dragged.id);
 
-    // add to new parent
+    // Add to new parent
     todos.find(t => t.id === newParentId).subs.push(subItem);
   }
 
